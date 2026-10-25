@@ -42,7 +42,7 @@ for a, b in festival_windows:
 
 rows = []
 for i, d in enumerate(dates):
-    dow = d.dayofweek
+    dow = d.day_of_week
     weekend_boost = 1.25 if dow in (5, 6) else 1.0
     trend = 1 + 0.0004 * i                      # business slowly growing
     fest_boost = 1.35 if festival[i] else 1.0
@@ -117,7 +117,7 @@ fig.tight_layout()
 fig.savefig(f"{OUT}/fig1_daily_demand.png", dpi=160)
 plt.close(fig)
 
-dow = clean.assign(dow=clean.date.dt.dayofweek).groupby("dow").qty.mean()
+dow = clean.assign(dow=clean.date.dt.day_of_week).groupby("dow").qty.mean()
 fig, ax = plt.subplots(figsize=(5, 3.2))
 ax.bar(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], dow.values, color="#1f4e79")
 ax.set_title("Average order size by weekday")
@@ -130,7 +130,7 @@ plt.close(fig)
 # STEP 5: demand forecasting (regression)
 # ---------------------------------------------------------------------------
 d = daily.copy()
-d["dow"] = d.date.dt.dayofweek
+d["dow"] = d.date.dt.day_of_week
 d["month"] = d.date.dt.month
 d["is_weekend"] = d.dow.isin([5, 6]).astype(int)
 d["lag1"] = d.demand.shift(1)
